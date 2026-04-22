@@ -1,7 +1,7 @@
 """
 seed.py — Lea Record Shop
 =========================
-Popula o banco e o Redis com dados do cenário descrito no desafio:
+Popula o banco e o Redis com os dados iniciais da loja:
   • Disco "We Are Reactive" da Hohpe — 500 unidades (o lançamento)
   • Mais 6 discos variados para deixar o catálogo realista
   • 5 clientes de exemplo prontos para fazer pedidos

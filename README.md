@@ -1,7 +1,7 @@
 # 🎵 Lea Record Shop
 
-API de e-commerce para a loja de discos Lea Record Shop.  
-Desafio técnico Backend — Python · FastAPI · PostgreSQL · Redis · Docker
+**Sistema completo de e-commerce para uma loja de discos de vinil**  
+Backend assíncrono · Catálogo interativo · Lançamento especial em tempo real
 
 ---
 
