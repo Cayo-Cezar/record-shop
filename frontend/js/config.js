@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════
    CONFIG & STATE
 ═══════════════════════════════════════════════════════════ */
-const API = 'http://localhost:8000';
+const API = 'https://record-shop-production-72f7.up.railway.app';
 
 // Global state
 let currentUser = null;
