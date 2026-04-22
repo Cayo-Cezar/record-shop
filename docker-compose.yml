@@ -1,0 +1,84 @@
+version: "3.9"
+
+services:
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: lea_postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: lea_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d lea_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: lea_redis
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lea_api
+    environment:
+      DATABASE_URL: postgresql://user:password@lea_postgres:5432/lea_db
+      REDIS_URL: redis://lea_redis:6379/0
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: on-failure
+
+  # ─── Worker (consumer da fila Redis) ─────────────────────
+  # Escale para o lançamento: docker compose up --scale worker=4
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    container_name: lea_worker
+    environment:
+      DATABASE_URL: postgresql://user:password@lea_postgres:5432/lea_db
+      REDIS_URL: redis://lea_redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: on-failure
+
+  
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: lea_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+    restart: on-failure
+
+volumes:
+  postgres_data:
+  redis_data:
