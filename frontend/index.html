@@ -1701,7 +1701,7 @@
           </button>
         </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem">
 
           <!-- Admin Pedidos -->
           <div>
@@ -1724,6 +1724,23 @@
               </button>
             </div>
             <div id="clientes-list">
+              <div class="spinner-ring"></div>
+            </div>
+          </div>
+
+        </div>
+
+          <!-- Admin Discos -->
+          <div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+              <div class="sec-title" style="font-size:1.1rem;margin-bottom:0">
+                <i class="bi bi-disc"></i> Gerenciar Discos
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="loadAdminDiscos()">
+                <i class="bi bi-arrow-clockwise"></i>
+              </button>
+            </div>
+            <div id="admin-discos-list" style="display:flex;flex-direction:column;gap:.4rem">
               <div class="spinner-ring"></div>
             </div>
           </div>
