@@ -19,10 +19,14 @@ class DiscoRepository:
         artista: Optional[str] = None,
         ano_lancamento: Optional[int] = None,
         estilo: Optional[str] = None,
+        include_inactive: bool = False,
         page: int = 1,
         page_size: int = 20,
     ) -> Tuple[int, List[Disco]]:
-        query = db.query(Disco).filter(Disco.ativo == True)
+        query = db.query(Disco)
+        
+        if not include_inactive:
+            query = query.filter(Disco.ativo == True)
 
         if nome:
             query = query.filter(Disco.nome.ilike(f"%{nome}%"))

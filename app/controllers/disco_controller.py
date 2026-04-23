@@ -17,11 +17,12 @@ def list_discos(
     artista: Optional[str] = Query(None),
     ano_lancamento: Optional[int] = Query(None),
     estilo: Optional[str] = Query(None),
+    include_inactive: bool = Query(False),
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db),
 ):
-    return disco_service.list(db, nome, artista, ano_lancamento, estilo, page, page_size)
+    return disco_service.list(db, nome, artista, ano_lancamento, estilo, include_inactive, page, page_size)
 
 
 @router.get("/{disco_id}", response_model=DiscoResponse)

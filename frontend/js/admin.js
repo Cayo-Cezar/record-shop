@@ -83,7 +83,7 @@ async function loadAdminDiscos() {
   const box = document.getElementById('admin-discos-list');
   box.innerHTML = '<div class="spinner-ring"></div>';
   try {
-    const data = await apiFetch('/discos?page_size=100');
+    const data = await apiFetch('/discos?page_size=100&include_inactive=true');
     const discos = data.items || [];
     if (!discos.length) {
       box.innerHTML = `<div style="font-size:.82rem;color:var(--muted);padding:.5rem 0">Nenhum disco cadastrado.</div>`;

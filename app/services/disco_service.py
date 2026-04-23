@@ -66,6 +66,7 @@ class DiscoService:
         artista: Optional[str],
         ano_lancamento: Optional[int],
         estilo: Optional[str],
+        include_inactive: bool,
         page: int,
         page_size: int,
     ) -> PaginatedDiscos:
@@ -73,6 +74,7 @@ class DiscoService:
             settings.DISCO_LIST_CACHE_PREFIX,
             nome=nome, artista=artista,
             ano_lancamento=ano_lancamento, estilo=estilo,
+            include_inactive=include_inactive,
             page=page, page_size=page_size,
         )
 
@@ -83,6 +85,7 @@ class DiscoService:
         total, discos = disco_repository.list(
             db, nome=nome, artista=artista,
             ano_lancamento=ano_lancamento, estilo=estilo,
+            include_inactive=include_inactive,
             page=page, page_size=page_size,
         )
         result = PaginatedDiscos(
