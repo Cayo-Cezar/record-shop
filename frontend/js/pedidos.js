@@ -19,6 +19,13 @@ async function populatePedidoSelects() {
     selC.innerHTML = '<option value="">Selecione um cliente…</option>' +
       ativos.map(c => `<option value="${c.id}">${esc(c.nome_completo)} — ${esc(c.email)}</option>`).join('');
 
+    // Popula o select de filtro de pedidos com todos os clientes
+    const selFiltro = document.getElementById('f-ped-cliente');
+    if (selFiltro) {
+      selFiltro.innerHTML = '<option value="">Todos os clientes</option>' +
+        _clientes.map(c => `<option value="${c.id}">${esc(c.nome_completo)}</option>`).join('');
+    }
+
     const comEstoque = _discos.filter(d => d.quantidade > 0 && (d.nome !== 'We Are Reactive' || _isLaunchLive));
     selD.innerHTML = '<option value="">Selecione um disco…</option>' +
       comEstoque.map(d =>
@@ -152,13 +159,19 @@ async function consultarPedidoById(id) {
   }
 }
 
-async function loadPedidos() {
+async function loadPedidos(clienteId = '', dataInicio = '', dataFim = '') {
   const box = document.getElementById('pedidos-list');
+  box.innerHTML = '<div class="spinner-ring"></div>';
   try {
-    const data = await apiFetch('/pedidos?page_size=10');
+    const params = new URLSearchParams({ page_size: 20 });
+    if (clienteId)   params.set('cliente_id', clienteId);
+    if (dataInicio)  params.set('data_inicio', new Date(dataInicio).toISOString());
+    if (dataFim)     params.set('data_fim',    new Date(dataFim).toISOString());
+
+    const data = await apiFetch('/pedidos?' + params.toString());
     const pedidos = data.items || [];
     if (!pedidos.length) {
-      box.innerHTML = `<div style="font-size:.82rem;color:var(--muted);padding:.5rem 0">Nenhum pedido ainda.</div>`;
+      box.innerHTML = `<div style="font-size:.82rem;color:var(--muted);padding:.5rem 0">Nenhum pedido encontrado.</div>`;
       return;
     }
     const icons = { COMPLETED: '✅', FAILED: '❌', PENDING: '⏳', PROCESSING: '⚙️' };
@@ -180,5 +193,21 @@ async function loadPedidos() {
         </button>
       </div>
     `).join('');
-  } catch (_) { }
+  } catch (_) {
+    box.innerHTML = `<div style="font-size:.82rem;color:var(--danger);padding:.5rem 0">Erro ao carregar pedidos.</div>`;
+  }
+}
+
+function filtrarPedidos() {
+  const clienteId  = document.getElementById('f-ped-cliente').value;
+  const dataInicio = document.getElementById('f-ped-inicio').value;
+  const dataFim    = document.getElementById('f-ped-fim').value;
+  loadPedidos(clienteId, dataInicio, dataFim);
+}
+
+function limparFiltrosPedidos() {
+  document.getElementById('f-ped-cliente').value = '';
+  document.getElementById('f-ped-inicio').value  = '';
+  document.getElementById('f-ped-fim').value     = '';
+  loadPedidos();
 }
