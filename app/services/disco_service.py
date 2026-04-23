@@ -105,7 +105,7 @@ class DiscoService:
         return DiscoResponse.model_validate(disco)
 
     def update(self, db: Session, disco_id: int, data: DiscoUpdate) -> DiscoResponse:
-        disco = disco_repository.get_by_id(db, disco_id)
+        disco = disco_repository.get_by_id_any_status(db, disco_id)
         if not disco:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Disco não encontrado")
 

@@ -21,6 +21,7 @@ class DiscoUpdate(BaseModel):
     ano_lancamento: Optional[int] = Field(None, ge=1900, le=2100)
     estilo: Optional[str] = Field(None, min_length=1, max_length=100)
     quantidade: Optional[int] = Field(None, ge=0)
+    ativo: Optional[bool] = None  # permite reativar um disco inativado
 
 
 class DiscoResponse(DiscoBase):

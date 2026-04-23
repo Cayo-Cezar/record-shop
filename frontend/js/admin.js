@@ -92,19 +92,20 @@ async function loadAdminDiscos() {
     box.innerHTML = discos.map(d => `
       <div class="pedido-row" style="padding:.6rem 1rem">
         <div style="flex:1;min-width:0">
-          <div style="font-size:.82rem;font-weight:600;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+          <div style="font-size:.82rem;font-weight:600;color:${d.ativo ? 'var(--cream)' : 'var(--muted)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
             ${esc(d.nome)}
           </div>
           <div style="font-size:.72rem;color:var(--muted)">
             ${esc(d.artista)} · ${d.ano_lancamento} · ${esc(d.estilo)}
           </div>
-          <div style="font-size:.72rem;margin-top:2px;color:${d.quantidade > 0 ? 'var(--success)' : 'var(--danger)'}">
+          <div style="font-size:.72rem;margin-top:2px;color:${d.ativo && d.quantidade > 0 ? 'var(--success)' : 'var(--danger)'}">
             ${d.ativo ? `${d.quantidade} un.` : '<em>Inativo</em>'}
           </div>
         </div>
-        <button class="btn-danger-ghost" onclick="deletarDisco(${d.id}, '${esc(d.nome).replace(/'/g, "\\'")}')">
-          <i class="bi bi-trash"></i>
-        </button>
+        ${d.ativo
+          ? `<button class="btn-danger-ghost" onclick="deletarDisco(${d.id}, '${esc(d.nome).replace(/'/g, "\\'")}')"><i class="bi bi-trash"></i></button>`
+          : `<button class="btn btn-ghost btn-sm" style="color:var(--success);border-color:rgba(76,175,130,.4)" onclick="reativarDisco(${d.id}, '${esc(d.nome).replace(/'/g, "\\'")}')" title="Reativar"><i class="bi bi-arrow-counterclockwise"></i></button>`
+        }
       </div>
     `).join('');
   } catch (err) {
@@ -117,10 +118,24 @@ async function deletarDisco(id, nome) {
   try {
     await apiFetch(`/discos/${id}`, { method: 'DELETE' });
     toast(`Disco "${nome}" inativado com sucesso.`, 'success');
-    // Atualiza lista admin e catálogo principal
     loadAdminDiscos();
     loadDiscos();
   } catch (err) {
     toast('Erro ao inativar disco: ' + err.message, 'error');
+  }
+}
+
+async function reativarDisco(id, nome) {
+  if (!confirm(`Deseja reativar o disco "${nome}"?\n\nEle voltará a aparecer no catálogo.`)) return;
+  try {
+    await apiFetch(`/discos/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ ativo: true }),
+    });
+    toast(`Disco "${nome}" reativado com sucesso!`, 'success');
+    loadAdminDiscos();
+    loadDiscos();
+  } catch (err) {
+    toast('Erro ao reativar disco: ' + err.message, 'error');
   }
 }
