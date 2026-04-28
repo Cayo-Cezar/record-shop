@@ -153,6 +153,9 @@ class PedidoService:
 
             db.commit()
             pedido_repository.update_status(db, pedido, PedidoStatus.COMPLETED)
+            
+            from app.services.disco_service import disco_service
+            disco_service._invalidate_all()
 
         except Exception as exc:
             # Unexpected error — rollback Redis and mark failed
@@ -198,6 +201,10 @@ class PedidoService:
         _, discos = disco_repository.list(db, page_size=1000)
         for disco in discos:
             r.set(f"{settings.STOCK_KEY_PREFIX}:{disco.id}", disco.quantidade)
+            
+        # 6. Invalidate API caches
+        from app.services.disco_service import disco_service
+        disco_service._invalidate_all()
 
 
 pedido_service = PedidoService()
