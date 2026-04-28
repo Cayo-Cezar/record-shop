@@ -5,12 +5,10 @@ from typing import Any, Optional
 from app.core.config import settings
 
 # Connection pool shared across all coroutines / threads
-# ssl_cert_reqs="none" is required for Upstash (rediss://) on cloud environments
 _pool = redis.ConnectionPool.from_url(
     settings.REDIS_URL,
     max_connections=50,
     decode_responses=True,
-    ssl_cert_reqs="none" if settings.REDIS_URL.startswith("rediss://") else None,
 )
 
 

@@ -1,6 +1,0 @@
-NAME=lea-record-shop-worker
-TYPE=bot
-MAIN=worker_start.py
-RAM=256
-VERSION=3.12
-AUTORESTART=true

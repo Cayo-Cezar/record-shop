@@ -4,13 +4,13 @@ import urllib.error
 import json
 import time
 
-URL = "https://record-shop-production-72f7.up.railway.app/pedidos"
-TOTAL_REQUESTS = 600
+URL = "http://localhost:8000/pedidos"
+TOTAL_REQUESTS = 500
 CONCURRENCY = 50
 
 # Use the IDs we fetched from the running database
-CLIENTE_ID = 21
-DISCO_ID = 29  # We Are Reactive (500 units in stock)
+CLIENTE_ID = 512
+DISCO_ID = 1368  # We Are Reactive (500 units in stock)
 
 PAYLOAD = json.dumps({
     "cliente_id": CLIENTE_ID,
